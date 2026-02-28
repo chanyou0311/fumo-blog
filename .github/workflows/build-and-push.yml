@@ -1,0 +1,39 @@
+name: Build and Push
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get short SHA
+        id: sha
+        run: echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image (ARM64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/arm64
+          push: false
+          tags: registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}
+
+      # TODO: ARC (self-hosted runner) 稼働後に以下を有効化
+      # - name: Login to Zot registry
+      #   run: echo "${{ secrets.ZOT_PASSWORD }}" | docker login registry.fumo.jp -u "${{ secrets.ZOT_USERNAME }}" --password-stdin
+      #
+      # - name: Push to Zot registry
+      #   run: docker push registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}

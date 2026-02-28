@@ -1,0 +1,28 @@
+baseURL = "https://blog.fumo.jp/"
+languageCode = "ja"
+title = "fumo blog"
+theme = "PaperMod"
+
+enableRobotsTXT = true        # Hugo デフォルト false → true に変更
+
+[params]
+  defaultTheme = "auto"       # 未設定時の挙動が不明確なため明示
+  ShowReadingTime = true       # PaperMod デフォルト false → 有効化
+  ShowPostNavLinks = true      # PaperMod デフォルト false → 有効化
+  ShowBreadCrumbs = true       # PaperMod デフォルト false → 有効化
+  ShowCodeCopyButtons = true   # PaperMod デフォルト false → 有効化
+  ShowToc = true               # PaperMod デフォルト false → 有効化
+
+[markup.goldmark.renderer]
+  unsafe = true               # Hugo デフォルト false → true（HTML in Markdown）
+
+[markup.tableOfContents]
+  endLevel = 4                # Hugo デフォルト 3 → 4 に変更
+
+[permalinks]
+  # Hugo デフォルト /:section/:filename/ ではファイルリネームで URL が変わるため、
+  # slug ベースに変更（フロントマターで明示的制御）
+  posts = "/posts/:slug/"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]  # Hugo デフォルト ["HTML", "RSS"] → JSON 追加
