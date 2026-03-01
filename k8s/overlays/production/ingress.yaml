@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fumo-blog
+  namespace: blog
+  annotations:
+    cert-manager.io/cluster-issuer: fumo-issuer
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: blog.fumo.jp
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fumo-blog
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - blog.fumo.jp
+      secretName: fumo-blog-tls
