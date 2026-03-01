@@ -26,16 +26,17 @@ jobs:
         id: sha
         run: echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
 
-      - name: Build Docker image (ARM64)
+      - name: Login to Zot registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.fumo.jp
+          username: ${{ secrets.ZOT_USERNAME }}
+          password: ${{ secrets.ZOT_PASSWORD }}
+
+      - name: Build and Push Docker image (ARM64)
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/arm64
-          push: false
+          push: true
           tags: registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}
-
-      - name: Login to Zot registry
-        run: echo "${{ secrets.ZOT_PASSWORD }}" | docker login registry.fumo.jp -u "${{ secrets.ZOT_USERNAME }}" --password-stdin
-
-      - name: Push to Zot registry
-        run: docker push registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}
