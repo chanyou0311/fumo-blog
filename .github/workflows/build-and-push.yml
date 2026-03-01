@@ -3,10 +3,13 @@ name: Build and Push
 on:
   push:
     branches: [main]
+    # ArgoCD Image Updater の write-back (k8s/ 配下) で CI が再発火しないようにする
+    paths-ignore:
+      - 'k8s/**'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: arc-runner-fumo-blog
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,9 +34,8 @@ jobs:
           push: false
           tags: registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}
 
-      # TODO: ARC (self-hosted runner) 稼働後に以下を有効化
-      # - name: Login to Zot registry
-      #   run: echo "${{ secrets.ZOT_PASSWORD }}" | docker login registry.fumo.jp -u "${{ secrets.ZOT_USERNAME }}" --password-stdin
-      #
-      # - name: Push to Zot registry
-      #   run: docker push registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}
+      - name: Login to Zot registry
+        run: echo "${{ secrets.ZOT_PASSWORD }}" | docker login registry.fumo.jp -u "${{ secrets.ZOT_USERNAME }}" --password-stdin
+
+      - name: Push to Zot registry
+        run: docker push registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}
