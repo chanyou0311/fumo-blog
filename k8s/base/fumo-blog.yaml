@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: blog
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fumo-blog
+  namespace: blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fumo-blog
+  template:
+    metadata:
+      labels:
+        app: fumo-blog
+    spec:
+      containers:
+        - name: nginx
+          image: registry.fumo.jp/fumo-blog:a764406
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fumo-blog
+  namespace: blog
+spec:
+  selector:
+    app: fumo-blog
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
