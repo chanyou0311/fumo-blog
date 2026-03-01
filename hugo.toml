@@ -25,4 +25,4 @@ enableRobotsTXT = true        # Hugo デフォルト false → true に変更
   posts = "/posts/:slug/"
 
 [outputs]
-  home = ["HTML", "RSS", "JSON"]  # Hugo デフォルト ["HTML", "RSS"] → JSON 追加
+  home = ["HTML", "RSS", "JSON"] # Hugo デフォルト ["HTML", "RSS"] → JSON 追加（検索用）
