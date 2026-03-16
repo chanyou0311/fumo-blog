@@ -33,10 +33,10 @@ jobs:
           username: ${{ secrets.ZOT_USERNAME }}
           password: ${{ secrets.ZOT_PASSWORD }}
 
-      - name: Build and Push Docker image (ARM64)
+      - name: Build and Push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/arm64
+          platforms: linux/arm64,linux/amd64
           push: true
           tags: registry.fumo.jp/fumo-blog:${{ steps.sha.outputs.sha }}
